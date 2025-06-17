@@ -3,15 +3,20 @@
 A full-stack web application to manage and split group expenses among users. Built with a React (Vite) frontend, FastAPI backend, PostgreSQL database, and Docker for containerization. The backend leverages LlamaIndex and the Gemini API to create an intelligent agent with tools that connect to the PostgreSQL database, utilizing Chain-of-Thought (CoT) prompting for enhanced reasoning and query processing.
 
 ---
+## How does it look?
+
+![alt text](assets/1.png)
+![alt text](assets/2.png)
+![alt text](assets/3.png)
 
 ## Tech Stack
 
-| Layer     | Technology         |
-|-----------|--------------------|
-| Frontend  | React (Vite)       |
+| Layer     | Technology                               |
+|-----------|------------------------------------------|
+| Frontend  | ReactJS,Tailwindcss                      |
 | Backend   | FastAPI (Python), LlamaIndex, Gemini API |
-| Database  | PostgreSQL         |
-| DevOps    | Docker, Docker Compose |
+| Database  | PostgreSQL(ORM : sqlalchemy)             |
+| DevOps    | Docker Compose                           |
 
 ---
 
