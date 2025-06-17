@@ -23,8 +23,10 @@ load_dotenv()
 
 router = APIRouter()
 
+
 class AgentQuery(BaseModel):
     query: str
+
 
 def get_all_users_tool_func() -> list[dict]:
     db = next(get_db())
@@ -34,17 +36,19 @@ def get_all_users_tool_func() -> list[dict]:
     finally:
         db.close()
 
+
 get_users_tool = FunctionTool.from_defaults(
     fn=get_all_users_tool_func,
     name="get_all_users",
-    description="Fetches all users from the database"
+    description="Fetches all users from the database",
 )
 
 get_groups_tool = FunctionTool.from_defaults(
     fn=lambda: get_all_groups(next(get_db())),
     name="get_all_groups",
-    description="Fetches all the groups from the database"
+    description="Fetches all the groups from the database",
 )
+
 
 def get_expenses_group_tool_func(group_id: int) -> list[dict]:
     db = next(get_db())
@@ -53,11 +57,13 @@ def get_expenses_group_tool_func(group_id: int) -> list[dict]:
     finally:
         db.close()
 
+
 get_expenses_group_tool = FunctionTool.from_defaults(
     fn=get_expenses_group_tool_func,
     name="get_expenses_per_group",
-    description="Fetches all expenses for a group using its ID (integer)."
+    description="Fetches all expenses for a group using its ID (integer).",
 )
+
 
 def group_balances_tool_func(group_id: int) -> list[dict]:
     db = next(get_db())
@@ -66,11 +72,13 @@ def group_balances_tool_func(group_id: int) -> list[dict]:
     finally:
         db.close()
 
+
 group_balances_tool = FunctionTool.from_defaults(
     fn=group_balances_tool_func,
     name="calculate_group_balances",
-    description="Calculates how much each user in a group owes or is owed, given the group ID."
+    description="Calculates how much each user in a group owes or is owed, given the group ID.",
 )
+
 
 def all_user_totals_tool_func() -> list[dict]:
     db = next(get_db())
@@ -79,11 +87,13 @@ def all_user_totals_tool_func() -> list[dict]:
     finally:
         db.close()
 
+
 all_user_totals_tool = FunctionTool.from_defaults(
     fn=all_user_totals_tool_func,
     name="calculate_all_user_totals",
-    description="Returns each user's total owed and due amount across all groups."
+    description="Returns each user's total owed and due amount across all groups.",
 )
+
 
 def user_balances_tool_func(user_id: int) -> dict:
     db = next(get_db())
@@ -92,16 +102,14 @@ def user_balances_tool_func(user_id: int) -> dict:
     finally:
         db.close()
 
+
 user_balances_tool = FunctionTool.from_defaults(
     fn=user_balances_tool_func,
     name="calculate_user_balances",
-    description="Given a user ID, shows who they owe and who owes them."
+    description="Given a user ID, shows who they owe and who owes them.",
 )
 
-llm = Gemini(
-    model="models/gemini-1.5-flash",
-    api_key=os.getenv("GOOGLE_API_KEY")
-)
+llm = Gemini(model="models/gemini-1.5-flash", api_key=os.getenv("GOOGLE_API_KEY"))
 
 agent_worker = FunctionCallingAgentWorker.from_tools(
     tools=[
@@ -110,29 +118,39 @@ agent_worker = FunctionCallingAgentWorker.from_tools(
         get_expenses_group_tool,
         group_balances_tool,
         all_user_totals_tool,
-        user_balances_tool
+        user_balances_tool,
     ],
     llm=llm,
     system_prompt=(
         "You are a helpful agent that answers queries about users, groups, expenses, and balances using the provided tools.\n\n"
-        "Think step-by-step before answering any question. First understand the query, then decide which tools are needed, and invoke them in the correct order.\n"
-        "Use the following approach:\n"
-        "1. Understand what the user is asking.\n"
-        "2. If needed, fetch related information (e.g., get all users or groups).\n"
-        "3. Match names to IDs if only names are given.\n"
-        "4. Call the relevant tool with the correct parameters.\n"
-        "5. Aggregate the results if needed and answer clearly.\n\n"
+        "Follow these general principles:\n"
+        "1. Understand the user’s intent clearly.\n"
+        "2. Break the query down into steps if needed.\n"
+        "3. Choose the correct tools and invoke them in the right order.\n"
+        "4. Match user-friendly names (like group or user names) to their internal IDs using fuzzy, case-insensitive matching.\n"
+        "5. If names don’t match, suggest alternatives from the available data.\n"
+        "6. If a follow-up query is made, recall relevant context and re-invoke tools if needed.\n"
+        "7. Always explain your reasoning briefly before giving the answer.\n\n"
+        "Use the following tools depending on the query type:\n\n"
+        "- Get all users: Use `get_all_users` when you need to resolve user names to IDs or list users.\n"
+        "- Get all groups: Use `get_all_groups` to find group names, resolve group IDs, or check group memberships.\n"
+        "- Group expenses: Use `get_all_groups` to find the group ID, then `get_expenses_per_group` with the ID.\n"
+        "- Group balances: Use `get_all_groups` to get the ID, then call `calculate_group_balances`.\n"
+        "- Total balances for all users: Use `calculate_all_user_totals`.\n"
+        "- Individual user balance: Use `get_all_users` to find the ID, then use `calculate_user_balances`.\n"
+        "- Find which group a user belongs to: Use `get_all_groups` and check inside each group’s data for a match with the user (using `get_all_users` if needed).\n\n"
         "Examples:\n"
-        "- If someone asks for a group's expenses using a group name, first call `get_all_groups`, find the group ID by matching the name (case-insensitive), then call `get_expenses_per_group` with that ID.\n"
-        "- If someone asks how much each person owes or is owed within a group, use `calculate_group_balances` with the group ID (get it using `get_all_groups` if needed).\n"
-        "- If the user asks for a summary of what each person owes/should receive across the system, use `calculate_all_user_totals`.\n"
-        "- If a user wants their personal balance (who they owe or who owes them), use `calculate_user_balances` with their user ID (find it using `get_all_users`).\n\n"
-        "Always explain your reasoning briefly before giving the answer."
+        "- 'Show me expenses for the group called Alpha' → Call `get_all_groups`, find 'Alpha', then call `get_expenses_per_group(group_id)`.\n"
+        "- 'How much does Alice owe?' → Call `get_all_users`, find 'Alice', then call `calculate_user_balances(user_id)`.\n"
+        "- 'List everyone’s totals' → Use `calculate_all_user_totals` directly.\n"
+        "- 'What groups is Creme in?' → Use `get_all_groups`, check membership lists for a match with user name 'Creme' (resolve via `get_all_users` if needed).\n\n"
+        "When in doubt, fetch supporting data (users or groups) and try to match based on content. If something is unclear or missing, either clarify with the user or provide best-effort results."
     ),
-    verbose=True
+    verbose=True,
 )
 
 agent = AgentRunner(agent_worker)
+
 
 @router.post("/agent/query")
 async def run_agent_endpoint(query: AgentQuery):
@@ -141,6 +159,7 @@ async def run_agent_endpoint(query: AgentQuery):
         return {"response": str(response)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Agent error: {str(e)}")
+
 
 @router.get("/agent/test-group")
 def test_groups(db: Session = Depends(get_db)):
