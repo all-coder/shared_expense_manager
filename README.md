@@ -9,13 +9,14 @@ A full-stack web application to manage and split group expenses among users. Bui
 ![alt text](assets/2.png)
 ![alt text](assets/3.png)
 
+---
 ## Tech Stack
 
 | Layer     | Technology                               |
 |-----------|------------------------------------------|
-| Frontend  | ReactJS,Tailwindcss                      |
+| Frontend  | ReactJS,TailWindCss                      |
 | Backend   | FastAPI (Python), LlamaIndex, Gemini API |
-| Database  | PostgreSQL(ORM : sqlalchemy)             |
+| Database  | PostgreSQL (ORM : sqlalchemy)            |
 | DevOps    | Docker Compose                           |
 
 ---
