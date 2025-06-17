@@ -125,22 +125,6 @@ docker compose down -v
 
 ---
 
-## Optional: Run PostgreSQL Locally (Without Docker)
-
-1. Install PostgreSQL: https://www.postgresql.org/download/
-2. Create a database named `expenses`
-3. Update `backend/.env`:
-
-```
-DATABASE_URL=postgresql://your_user:your_password@localhost:5432/expenses
-GOOGLE_GENAI_USE_VERTEXAI=FALSE
-GOOGLE_API_KEY=your_gemini_api_key
-```
-
-Then run only the frontend and backend via Docker or locally.
-
----
-
 ## Agent Implementation
 
 The backend uses LlamaIndex integrated with the Gemini API to create an intelligent agent capable of processing complex queries. The agent employs tools to connect directly to the PostgreSQL database for data retrieval and manipulation. Chain-of-Thought (CoT) prompting is utilized to improve the agent's reasoning process, enabling more accurate and context-aware responses.
