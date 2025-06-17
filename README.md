@@ -1,4 +1,7 @@
 # Shared Expense Manager
+---
+NeurixAI Assignment
+---
 
 A full-stack web application to manage and split group expenses among users. Built with a React (Vite) frontend, FastAPI backend, PostgreSQL database, and Docker for containerization. The backend leverages LlamaIndex and the Gemini API to create an intelligent agent with tools that connect to the PostgreSQL database, utilizing Chain-of-Thought (CoT) prompting for enhanced reasoning and query processing.
 
@@ -61,7 +64,7 @@ cd shared-expense-manager
 - In the Object Browser:
   - Right-click on **Databases** → **Create** → **Database**.
   - Enter a name for your database (e.g., `shared_expense_db`) and click **Save**.
-  
+
 ### 3. Configure Environment Variables
 
 Create the following `.env` files:
