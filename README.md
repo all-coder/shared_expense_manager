@@ -1,6 +1,6 @@
 # Shared Expense Manager
 ---
-NeurixAI Assignment
+<sub>NeurixAI Assignment</sub>
 ---
 
 A full-stack web application to manage and split group expenses among users. Built with a React (Vite) frontend, FastAPI backend, PostgreSQL database, and Docker for containerization. The backend leverages LlamaIndex and the Gemini API to create an intelligent agent with tools that connect to the PostgreSQL database, utilizing Chain-of-Thought (CoT) prompting for enhanced reasoning and query processing.
