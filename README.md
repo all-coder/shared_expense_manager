@@ -42,7 +42,6 @@ A full-stack web application to manage and split group expenses among users. Bui
 - Docker Compose
 - PostgreSQL
 
-(Optional: PostgreSQL if not using Docker for the database)
 
 ---
 
