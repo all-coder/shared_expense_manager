@@ -1,6 +1,6 @@
 # Shared Expense Manager
 
-A full-stack web application to manage and split group expenses among users. Built with a React (Vite) frontend, FastAPI backend, PostgreSQL database, and Docker for containerization.
+A full-stack web application to manage and split group expenses among users. Built with a React (Vite) frontend, FastAPI backend, PostgreSQL database, and Docker for containerization. The backend leverages LlamaIndex and the Gemini API to create an intelligent agent with tools that connect to the PostgreSQL database, utilizing Chain-of-Thought (CoT) prompting for enhanced reasoning and query processing.
 
 ---
 
@@ -9,7 +9,7 @@ A full-stack web application to manage and split group expenses among users. Bui
 | Layer     | Technology         |
 |-----------|--------------------|
 | Frontend  | React (Vite)       |
-| Backend   | FastAPI (Python)   |
+| Backend   | FastAPI (Python), LlamaIndex, Gemini API |
 | Database  | PostgreSQL         |
 | DevOps    | Docker, Docker Compose |
 
@@ -21,6 +21,8 @@ A full-stack web application to manage and split group expenses among users. Bui
 - Add and track shared expenses
 - View group-wise and individual balances
 - RESTful API with auto-generated Swagger docs
+- Intelligent agent powered by LlamaIndex and Gemini API, with tools for querying PostgreSQL
+- Chain-of-Thought (CoT) prompting for enhanced backend reasoning
 - Docker-based setup for easy development and deployment
 
 ---
@@ -53,6 +55,8 @@ Create the following `.env` files:
 **backend/.env**
 ```
 DATABASE_URL=postgresql://postgres:postgres@db:5432/expenses
+GOOGLE_GENAI_USE_VERTEXAI=FALSE
+GOOGLE_API_KEY=your_gemini_api_key
 ```
 
 **frontend/.env**
@@ -60,7 +64,7 @@ DATABASE_URL=postgresql://postgres:postgres@db:5432/expenses
 VITE_BACKEND_URL=http://localhost:5000
 ```
 
-> Important: Do not commit real `.env` files. Commit `.env.example` files instead with placeholder values.
+Important: Do not commit real `.env` files. Commit `.env.example` files instead with placeholder values.
 
 ---
 
@@ -68,8 +72,16 @@ VITE_BACKEND_URL=http://localhost:5000
 
 ### Build and run all services
 
+To build and start all services defined in the `docker-compose.yml` file:
+
 ```bash
-docker-compose up --build
+docker compose up --build
+```
+
+To run services in detached mode (in the background):
+
+```bash
+docker compose up --build -d
 ```
 
 ### Access the services
@@ -77,10 +89,24 @@ docker-compose up --build
 - Frontend: http://localhost:3001
 - Backend (FastAPI Swagger UI): http://localhost:5000/docs
 
-To stop:
+### Stop the services
+
+To stop and remove the containers, networks, and volumes:
 
 ```bash
-docker-compose down
+docker compose down
+```
+
+To stop services without removing resources:
+
+```bash
+docker compose stop
+```
+
+To remove containers, networks, and volumes, including persistent data:
+
+```bash
+docker compose down -v
 ```
 
 ---
@@ -93,57 +119,17 @@ docker-compose down
 
 ```
 DATABASE_URL=postgresql://your_user:your_password@localhost:5432/expenses
+GOOGLE_GENAI_USE_VERTEXAI=FALSE
+GOOGLE_API_KEY=your_gemini_api_key
 ```
 
 Then run only the frontend and backend via Docker or locally.
 
 ---
 
-## Sample docker-compose.yml
+## Agent Implementation
 
-```yaml
-version: '3.8'
-
-services:
-  db:
-    image: postgres:14
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: expenses
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - app-network
-
-  backend:
-    build: ./backend
-    ports:
-      - "5000:8000"
-    env_file:
-      - ./backend/.env
-    depends_on:
-      - db
-    networks:
-      - app-network
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "3001:3000"
-    env_file:
-      - ./frontend/.env
-    depends_on:
-      - backend
-    networks:
-      - app-network
-
-volumes:
-  pgdata:
-
-networks:
-  app-network:
-```
+The backend uses LlamaIndex integrated with the Gemini API to create an intelligent agent capable of processing complex queries. The agent employs tools to connect directly to the PostgreSQL database for data retrieval and manipulation. Chain-of-Thought (CoT) prompting is utilized to improve the agent's reasoning process, enabling more accurate and context-aware responses.
 
 ---
 
