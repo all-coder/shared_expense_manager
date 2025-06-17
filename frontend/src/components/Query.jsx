@@ -3,7 +3,7 @@ import { queryAgent } from "../services/apiServices";
 
 export default function Query() {
   const [messages, setMessages] = useState(() => {
-    const saved = localStorage.getItem("chat_messages");
+    const saved = sessionStorage.getItem("chat_messages");
     return saved ? JSON.parse(saved) : [];
   });
   const [input, setInput] = useState("");
@@ -16,7 +16,7 @@ export default function Query() {
 
   useEffect(() => {
     scrollToBottom();
-    localStorage.setItem("chat_messages", JSON.stringify(messages));
+    sessionStorage.setItem("chat_messages", JSON.stringify(messages));
   }, [messages]);
 
   const handleSubmit = async (e) => {

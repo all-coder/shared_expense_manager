@@ -83,3 +83,13 @@ export async function addNewUser(name){
         return ""
     }
 }
+
+export async function addNewGroup(obj){
+    try{
+        const response = await apiPost("/groups",obj);
+        return response;
+    }catch(error){
+        console.log(error);
+        return [];
+    }
+}
