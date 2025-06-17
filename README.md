@@ -38,6 +38,7 @@ A full-stack web application to manage and split group expenses among users. Bui
 - Git
 - Docker
 - Docker Compose
+- PostgreSQL
 
 (Optional: PostgreSQL if not using Docker for the database)
 
@@ -53,8 +54,15 @@ cd shared-expense-manager
 ```
 
 ---
+### 2. pgAdmin (PostgreSQL)
 
-### 2. Configure Environment Variables
+- Open **pgAdmin**, the graphical interface for managing PostgreSQL databases.
+- Connect to your local PostgreSQL server (default username is usually `postgres`).
+- In the Object Browser:
+  - Right-click on **Databases** → **Create** → **Database**.
+  - Enter a name for your database (e.g., `shared_expense_db`) and click **Save**.
+  
+### 3. Configure Environment Variables
 
 Create the following `.env` files:
 
@@ -71,8 +79,6 @@ VITE_BACKEND_URL=http://localhost:5000
 ```
 
 Important: Do not commit real `.env` files. Commit `.env.example` files instead with placeholder values.
-
----
 
 ## Docker Setup
 
