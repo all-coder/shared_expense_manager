@@ -50,7 +50,7 @@ A full-stack web application to manage and split group expenses among users. Bui
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/shared-expense-manager.git
+git clone https://github.com/all-coder/shared-expense-manager.git
 cd shared-expense-manager
 ```
 
