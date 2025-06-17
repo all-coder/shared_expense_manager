@@ -1,5 +1,4 @@
 # Shared Expense Manager
----
 <sub>NeurixAI Assignment</sub>
 ---
 
