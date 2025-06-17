@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Users from "./components/Users";
 import  Groups  from "./components/Groups";
+import Query from "./components/Query";
 
 function App() {
   const [activeTab, setActiveTab] = useState("Users");
@@ -11,14 +12,14 @@ function App() {
         return <Users />;
       case "Groups":
         return <Groups/>;
-      case "Query":
-        return <p className="text-gray-600">View balances and who owes whom.</p>;
+      case "Query Agent":
+        return <Query/>;
       default:
         return null;
     }
   };
 
-  const tabs = ["Users", "Groups", "Query"];
+  const tabs = ["Users", "Groups", "Query Agent"];
 
   return (
     <div className="min-h-screen w-full bg-gray-100 text-black p-4 space-y-6 overflow-x-hidden">
@@ -31,7 +32,7 @@ function App() {
               onClick={() => setActiveTab(tab)}
               className={`px-5 py-2 text-sm font-medium transition ${
                 activeTab === tab
-                  ? "bg-gray-700 text-white"
+                  ? "bg-black text-white"
                   : "text-gray-700 hover:bg-gray-200"
               }`}
             >
