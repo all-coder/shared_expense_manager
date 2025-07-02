@@ -3,7 +3,6 @@ from models import User
 from fastapi import HTTPException
 
 def create_user(session: Session, name: str) -> User:
-    # Check if user with same name exists (optional)
     existing = session.query(User).filter_by(name=name).first()
     if existing:
         raise HTTPException(status_code=400, detail="User already exists")
